@@ -13,33 +13,75 @@
   <canvas id="myCanvas" width="480" height="320"></canvas>
   <script>
     var canvas = document.getElementById("myCanvas");
+    // Grabs a reference to the <canvas> HTML element and stores it to the
+    // variable, "canvas"
     var ctx = canvas.getContext("2d");
-
+    // ctx is the abbreviation of "context" and is used to tell JS that the
+    // context of the drawing will be "2D" in this case.  The other context is
+    // "3D".
     var x = canvas.width/2;
     var y = canvas.height-30;
+    // The above x and y coordinates define the starting point for the ball,
+    // which is the point halfway across the bottom of the canvas.
     var dx = 2;
+    // Moves x coordinate by +2 (i.e. +2 to the right)
     var dy = -2;
+    // Moves y coordinate by -2 (i.e. -2 upwards, because the top of the canvas
+    // is equal to 0)
     var ballRadius = 13;
 
     function drawBall() {
       ctx.beginPath();
       ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+    // arc adds an arc to the path.  The params are as follows:
+    // ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)
+    // x = x coordinate of arc's centre
+    // y = y cooridnate of arc's centre
+    // r = radius of the arc
+    // startAngle = angle at which the arc starts, measured clockwise from the
+    // x axis
+    // endAngle = angle at which the arc ends, measured clockwise from the x
+    // axis
+    // anticlockwise = boolean, which, if true, causes arc to be drawn counter-
+    // clockwise between the two angles.  By default it is drawn clockwise.
       ctx.fillStyle = "#0095DD";
+    // The above property stoes a color to be used by the fill() method to paint
+    // the square.
       ctx.fill();
+    // This method "paints" the square.
       ctx.closePath;
     }
 
-
     function draw() {
+    // This function draws BOTH the CANVAS and the BALL.
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Defines a rectangle.  First two values specify the COORDINATES of the
+    // top left corner of the rectangle.  Second two values specify the width
+    // and height of the rectangle respectively.
       drawBall();
       x += dx;
       y += dy;
+      // BOUNCE BALL OFF TOP AND BOTTOM OF CANVAS
+      if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
+        dy = -dy;
+        // The left side of the || operator bounces the ball off the BOTTOM of the
+        // canvas.  The right side of the || operator bounces the ball off the top
+        // of the canvas.  In either case, the bouncing is done by switching the y
+        // direction of the ball.
+      }
+      // BOUNCE BALL OFF LEFAT AND RIGHT OF CANVAS
+      if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+        dx = -dx;
+        // The left side of the || operator bounces the ball off of the RIGHT side
+        // of the canvas.  The right side of the || operator bounces the ball off
+        // the left side of the canvas.  In either case, the bouncing is done by
+        // switching the x direction of the ball.
+      }
     }
+
     setInterval(draw, 10);
 
   </script>
 </body>
-
 
 </html>
