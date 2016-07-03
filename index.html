@@ -19,6 +19,7 @@
     // ctx is the abbreviation of "context" and is used to tell JS that the
     // context of the drawing will be "2D" in this case.  The other context is
     // "3D".
+    var ballRadius = 13;
     var x = canvas.width/2;
     var y = canvas.height-30;
     // The above x and y coordinates define the starting point for the ball,
@@ -28,7 +29,38 @@
     var dy = -2;
     // Moves y coordinate by -2 (i.e. -2 upwards, because the top of the canvas
     // is equal to 0)
-    var ballRadius = 13;
+
+    var paddleHeight = 10;
+    var paddleWidth = 75;
+    var paddleX = (canvas.width-paddleWidth)/2;
+    // Immediately above lines defines the starting point on the x axis for the
+    // paddle.
+    var rightPressed = false;
+    var leftPressed = false;
+
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+
+    function keyDownHandler(e) {
+      if(e.keyCode == 39) {
+          rightPressed = true;
+      }
+      else if(e.keyCode == 37) {
+          leftPressed = true;
+      }
+    }
+
+    function keyUpHandler(e) {
+      if(e.keyCode == 39) {
+        rightPressed = false;
+      }
+      else if(e.keyCode == 37) {
+        leftPressed = false;
+      }
+    }
+    // Both of the above functions keyDownHandler and keyUpHandler take an
+    // event as a parameter ("e").  keyCode 37 is the LEFT cursor and keyCode 39
+    // is the RIGHT cursor.
 
     function drawBall() {
       ctx.beginPath();
@@ -52,31 +84,53 @@
       ctx.closePath;
     }
 
+    function drawPaddle() {
+      ctx.beginPath();
+      ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+      // Defines a rectangle.
+      ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+    }
+
     function draw() {
-    // This function draws BOTH the CANVAS and the BALL.
+    // This function draws (1) CANVAS, (2) BALL and (3) PADDLE.
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     // Defines a rectangle.  First two values specify the COORDINATES of the
     // top left corner of the rectangle.  Second two values specify the width
     // and height of the rectangle respectively.
       drawBall();
-      x += dx;
-      y += dy;
+      drawPaddle();
       // BOUNCE BALL OFF TOP AND BOTTOM OF CANVAS
       if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
         dy = -dy;
-        // The left side of the || operator bounces the ball off the BOTTOM of the
-        // canvas.  The right side of the || operator bounces the ball off the top
-        // of the canvas.  In either case, the bouncing is done by switching the y
-        // direction of the ball.
+        // The left side of the || operator bounces the ball off the BOTTOM of
+        // the canvas.  The right side of the || operator bounces the ball off
+        // the top of the canvas.  In either case, the bouncing is done by
+        // switching the y direction of the ball.
       }
       // BOUNCE BALL OFF LEFAT AND RIGHT OF CANVAS
       if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
         dx = -dx;
-        // The left side of the || operator bounces the ball off of the RIGHT side
-        // of the canvas.  The right side of the || operator bounces the ball off
-        // the left side of the canvas.  In either case, the bouncing is done by
-        // switching the x direction of the ball.
+        // The left side of the || operator bounces the ball off of the RIGHT
+        // side of the canvas.  The right side of the || operator bounces the
+        // ball off the left side of the canvas.  In either case, the bouncing
+        // is done by switching the x direction of the ball.
       }
+
+      if(rightPressed && paddleX < canvas.width-paddleWidth) {
+        paddleX += 7;
+      }
+      else if(leftPressed && paddleX > 0) {
+        paddleX -= 7;
+      }
+      // The above logic works as follows:
+      // (1) if right cursor pressed the paddle will move 7px to the right.
+      // (2) if left cursor pressed the paddle will move 7px to the left.
+      // The code to the right of the < and > operators prevents the paddles
+      // sliding off the side of the canvas.
+      x += dx;
+      y += dy;
     }
 
     setInterval(draw, 10);
