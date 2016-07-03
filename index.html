@@ -101,15 +101,28 @@
     // and height of the rectangle respectively.
       drawBall();
       drawPaddle();
+
       // BOUNCE BALL OFF TOP AND BOTTOM OF CANVAS
-      if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
-        dy = -dy;
-        // The left side of the || operator bounces the ball off the BOTTOM of
-        // the canvas.  The right side of the || operator bounces the ball off
-        // the top of the canvas.  In either case, the bouncing is done by
-        // switching the y direction of the ball.
+      if(y + dy < ballRadius) {
+          dy = -dy;
+      } else if(y + dy > canvas.height-ballRadius) {
+          if(x > paddleX && x < paddleX + paddleWidth) {
+      // If ball's x coordinate (i.e. the x coordinate for the ball's centre
+      // is between paddle's x cooridnate plus paddle's width, then the ball's
+      // direction is reversed.
+              dy = -dy;
+          }
+          else {
+              alert("GAME OVER");
+              document.location.reload();
+          }
       }
-      // BOUNCE BALL OFF LEFAT AND RIGHT OF CANVAS
+      // The first IF statement stops the ball bouncing off the TOP of the
+      // canvas.  The ELSE IF statement stops the ball bouncing off the
+      // BOTTOM of the canvas, instead triggering a "GAME OVER" alert message
+      // unless the ball hits the paddle.
+
+      // BOUNCE BALL OFF LEFT AND RIGHT OF CANVAS
       if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
         dx = -dx;
         // The left side of the || operator bounces the ball off of the RIGHT
@@ -117,7 +130,7 @@
         // ball off the left side of the canvas.  In either case, the bouncing
         // is done by switching the x direction of the ball.
       }
-
+      // MOVE PADDLE LEFT AND RIGHT
       if(rightPressed && paddleX < canvas.width-paddleWidth) {
         paddleX += 7;
       }
