@@ -62,7 +62,7 @@
     //  []
     //  ]
       for(r = 0; r < brickRowCount; r++) {
-        bricks[c][r] = { x: 0, y: 0}
+        bricks[c][r] = { x: 0, y: 0, status: 1}
       }
     //  Popuates each column with a JS dictionary of key-value pairs to
     // represent the coordinates of each brick.
@@ -101,6 +101,39 @@
     // event as a parameter ("e").  keyCode 37 is the LEFT cursor and keyCode 39
     // is the RIGHT cursor.
 
+    // COLLISION DETECTION FUNCTION
+
+    // This function will loop through all bricks and compare every single
+    // brick's position with the ball's coordinates as each frame is drawn.
+
+    function collisionDetection() {
+      for(c = 0; c < brickColumnCount; c++) {
+        for(r = 0; r < brickRowCount; r++) {
+          var b = bricks[c][r];
+          if(b.status == 1) {
+            // If a brick's status is == 1, we check if the ball has cross into
+            // it's area; if ball's status =/= 1 we don't check.
+            if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+              dy = -dy;
+              // Reverses ball direction upon collision with a brick
+              b.status = 0;
+            }
+          }
+        }
+      }
+    }
+
+    // If the center of the ball is inside the coordinates of one of the bricks,
+    // then the code will change the direction of the ball.  For the center of
+    // the ball to be inside a brick, ALL FOUR of the following statements need
+    // to be true:
+    // 1. The x position of the ball is greater than the x position of the brick.
+    // 2. The x position of the ball is less than the x position of the brick
+    //    plus its width.
+    // 3. The y position of the ball is greater than the y position of the brick.
+    // 4. The y position of the ball is less than the y position of the brick
+    //    plus its height.
+
     function drawBall() {
       ctx.beginPath();
       ctx.arc(x, y, ballRadius, 0, Math.PI*2);
@@ -137,19 +170,23 @@
     function drawBricks() {
       for(c = 0; c < brickColumnCount; c++) {
         for(r = 0; r < brickRowCount; r++) {
-          var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-          // Calculates X position of each brick.  Multiplies brickWidth+brickPadding
-          // by the column number and then adds the X offset value.
-          var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
-          // Calculates Y position of each brick.  Multiplies brickHeight+brickPadding
-          // by the row number and then adds the Y offset value.
-          bricks[c][r].x = brickX;
-          bricks[c][r].y = brickY;
-          ctx.beginPath();
-          ctx.rect(brickX, brickY, brickWidth, brickHeight);
-          ctx.fillStyle = "#0095DD";
-          ctx.fill();
-          ctx.closePath();
+          if(bricks[c][r].status == 1) {
+            // If the brick status is 1, draw brick.  If not (i.e. if brick is
+            // destroyed, don't draw.
+            var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+            // Calculates X position of each brick.  Multiplies brickWidth+brickPadding
+            // by the column number and then adds the X offset value.
+            var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+            // Calculates Y position of each brick.  Multiplies brickHeight+brickPadding
+            // by the row number and then adds the Y offset value.
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
+            ctx.beginPath();
+            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+          }
         }
       }
     }
@@ -163,6 +200,7 @@
       drawBricks();
       drawBall();
       drawPaddle();
+      collisionDetection();
 
       // BOUNCE BALL OFF TOP AND BOTTOM OF CANVAS
       if(y + dy < ballRadius) {
