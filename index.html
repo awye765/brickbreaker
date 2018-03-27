@@ -38,6 +38,45 @@
     var rightPressed = false;
     var leftPressed = false;
 
+    var brickRowCount = 3;
+    var brickColumnCount = 5;
+    var brickWidth = 75;
+    var brickHeight = 20;
+    var brickPadding = 10;
+    var brickOffsetTop = 30;
+    var brickOffsetLeft = 30;
+    // Defined number of rows and columns of the bricks, their widths, heights
+    // and padding between bricks so they won't touch each other and a top and
+    // left offset so they won't start being drawn right from the edge of the
+    // Canvas
+
+    var bricks = [];
+    for(c = 0; c < brickColumnCount; c++) {
+      bricks[c] = [];
+    // Creates 2D array of empty arrays for the columns,e.g.
+    // [
+    //  [],
+    //  [],
+    //  [],
+    //  [],
+    //  []
+    //  ]
+      for(r = 0; r < brickRowCount; r++) {
+        bricks[c][r] = { x: 0, y: 0}
+      }
+    //  Popuates each column with a JS dictionary of key-value pairs to
+    // represent the coordinates of each brick.
+    //  [
+    //    [ { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 } ],
+    //    [ { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 } ],
+    //    [ { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 } ],
+    //    [ { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 } ],
+    //    [ { x: 0, y: 0 }, { x: 0, y: 0 }, { x: 0, y: 0 } ],
+    //  ]
+    }
+    // The above loops through the rows and columns and creates the new bricks
+
+
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
 
@@ -93,12 +132,35 @@
       ctx.closePath();
     }
 
+    // BRICK DRAWING LOGIC FUNCTION
+
+    function drawBricks() {
+      for(c = 0; c < brickColumnCount; c++) {
+        for(r = 0; r < brickRowCount; r++) {
+          var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+          // Calculates X position of each brick.  Multiplies brickWidth+brickPadding
+          // by the column number and then adds the X offset value.
+          var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+          // Calculates Y position of each brick.  Multiplies brickHeight+brickPadding
+          // by the row number and then adds the Y offset value.
+          bricks[c][r].x = brickX;
+          bricks[c][r].y = brickY;
+          ctx.beginPath();
+          ctx.rect(brickX, brickY, brickWidth, brickHeight);
+          ctx.fillStyle = "#0095DD";
+          ctx.fill();
+          ctx.closePath();
+        }
+      }
+    }
+
     function draw() {
     // This function draws (1) CANVAS, (2) BALL and (3) PADDLE.
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     // Defines a rectangle.  First two values specify the COORDINATES of the
     // top left corner of the rectangle.  Second two values specify the width
     // and height of the rectangle respectively.
+      drawBricks();
       drawBall();
       drawPaddle();
 
