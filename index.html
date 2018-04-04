@@ -76,6 +76,7 @@
     }
     // The above loops through the rows and columns and creates the new bricks
 
+    var score = 0;
 
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
@@ -117,6 +118,11 @@
               dy = -dy;
               // Reverses ball direction upon collision with a brick
               b.status = 0;
+              score++;
+              if(score == brickRowCount*brickColumnCount) {
+                alert("You win, congratulations! Your score was "+score);
+                document.location.reload();
+              }
             }
           }
         }
@@ -133,6 +139,14 @@
     // 3. The y position of the ball is greater than the y position of the brick.
     // 4. The y position of the ball is less than the y position of the brick
     //    plus its height.
+
+    function drawScore() {
+      ctx.font = "16px Arial";
+      ctx.fillStyle = "#0095DD";
+      ctx.fillText("Score: "+score, 8, 20);
+      // The first parameter is the text itself.  The last two parameters are
+      // the coordinates where the text will be placed on the canvas.
+    }
 
     function drawBall() {
       ctx.beginPath();
@@ -200,6 +214,7 @@
       drawBricks();
       drawBall();
       drawPaddle();
+      drawScore();
       collisionDetection();
 
       // BOUNCE BALL OFF TOP AND BOTTOM OF CANVAS
