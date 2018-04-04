@@ -19,7 +19,7 @@
     // ctx is the abbreviation of "context" and is used to tell JS that the
     // context of the drawing will be "2D" in this case.  The other context is
     // "3D".
-    var ballRadius = 13;
+    var ballRadius = 10;
     var x = canvas.width/2;
     var y = canvas.height-30;
     // The above x and y coordinates define the starting point for the ball,
@@ -49,6 +49,8 @@
     // and padding between bricks so they won't touch each other and a top and
     // left offset so they won't start being drawn right from the edge of the
     // Canvas
+    var score = 0;
+    var lives = 3;
 
     var bricks = [];
     for(c = 0; c < brickColumnCount; c++) {
@@ -76,13 +78,10 @@
     }
     // The above loops through the rows and columns and creates the new bricks
 
-    var score = 0;
-    var lives = 3;
 
     document.addEventListener("keydown", keyDownHandler, false);
     document.addEventListener("keyup", keyUpHandler, false);
     document.addEventListener("mousemove", mouseMoveHandler, false);
-
 
     function keyDownHandler(e) {
       if(e.keyCode == 39) {
@@ -241,10 +240,6 @@
       drawLives();
       collisionDetection();
 
-      // BOUNCE BALL OFF TOP AND BOTTOM OF CANVAS
-      if(y + dy < ballRadius) {
-          dy = -dy;
-      }
       // BOUNCE BALL OFF LEFT AND RIGHT OF CANVAS
       if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
         dx = -dx;
@@ -254,6 +249,10 @@
         // is done by switching the x direction of the ball.
       }
 
+      // BOUNCE BALL OFF TOP AND BOTTOM OF CANVAS
+      if(y + dy < ballRadius) {
+        dy = -dy;
+      }
       else if(y + dy > canvas.height-ballRadius) {
           if(x > paddleX && x < paddleX + paddleWidth) {
       // If ball's x coordinate (i.e. the x coordinate for the ball's centre
@@ -269,9 +268,9 @@
               }
               else {
                 x = canvas.width/2;
-                y = canvas.width-30;
-                dx = 2;
-                dy = -2;
+                y = canvas.height-30;
+                dx = 3;
+                dy = -3;
                 paddleX = (canvas.width-paddleWidth)/2;
               }
           }
